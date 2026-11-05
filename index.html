@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dictionary</title>
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4299e1">
+    <title>Defin</title>
     <style>
         * {
             margin: 0;
@@ -35,6 +39,14 @@
             border-bottom: 1px solid #e2e8f0;
         }
 
+        .header-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: block;
+            margin: 0 auto 12px;
+        }
+
         .title {
             font-size: 2.5rem;
             font-weight: 300;
@@ -61,7 +73,7 @@
 
         .search-input {
             width: 100%;
-            padding: 16px 20px;
+            padding: 16px 140px 16px 20px;
             font-size: 1.1rem;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
@@ -100,6 +112,29 @@
         .search-btn:disabled {
             background: #a0aec0;
             cursor: not-allowed;
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 96px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 0;
+            background: transparent;
+            color: #a0aec0;
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 4px 8px;
+            display: none;
+        }
+
+        .clear-btn.visible {
+            display: block;
+        }
+
+        .clear-btn:hover {
+            color: #2d3748;
         }
 
         .loading {
@@ -263,7 +298,7 @@
 
             .search-input {
                 font-size: 1rem;
-                padding: 14px 16px;
+                padding: 14px 140px 14px 16px;
             }
 
             .result-container {
@@ -279,7 +314,8 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1 class="title">Dictionary</h1>
+            <img class="header-logo" src="icons/icon-192x192.png" alt="Defin logo">
+            <h1 class="title">Defin</h1>
             <p class="subtitle">Discover meanings, pronunciations, and synonyms</p>
         </header>
 
@@ -292,13 +328,14 @@
                     placeholder="Enter a word to search..."
                     autocomplete="off"
                 >
+                <button id="clearBtn" class="clear-btn" type="button" aria-label="Clear search" title="Clear">×</button>
                 <button id="searchBtn" class="search-btn">Search</button>
             </div>
         </section>
 
         <main id="resultContainer">
             <div class="welcome">
-                <div class="welcome-icon">📚</div>
+                <div class="welcome-icon"><img src="icons/icon-192x192.png" alt="Defin logo" style="width: 72px; height: 72px; border-radius: 16px;"></div>
                 <p>Enter a word above to explore its meaning, pronunciation, and usage.</p>
             </div>
         </main>
@@ -311,6 +348,7 @@
     <script>
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
+        const clearBtn = document.getElementById('clearBtn');
         const resultContainer = document.getElementById('resultContainer');
 
         // Comprehensive dictionary data
@@ -554,6 +592,7 @@
 
         function showLoading() {
             resultContainer.innerHTML = '<div class="loading">Searching dictionary...</div>';
+            clearBtn.classList.remove('visible');
             searchBtn.disabled = true;
             searchBtn.textContent = 'Searching...';
         }
@@ -617,7 +656,18 @@
             resultContainer.innerHTML = resultHTML;
             searchBtn.disabled = false;
             searchBtn.textContent = 'Search';
+            toggleClearBtn();
         }
+
+        function toggleClearBtn() {
+            clearBtn.classList.toggle('visible', searchInput.value.length > 0);
+        }
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+            searchInput.focus();
+        });
 
         // Event listeners
         searchBtn.addEventListener('click', () => {
@@ -631,10 +681,11 @@
         });
 
         searchInput.addEventListener('input', (e) => {
+            toggleClearBtn();
             if (e.target.value.trim() === '') {
                 resultContainer.innerHTML = `
                     <div class="welcome">
-                        <div class="welcome-icon">📚</div>
+                        <div class="welcome-icon"><img src="icons/icon-192x192.png" alt="Defin logo" style="width: 72px; height: 72px; border-radius: 16px;"></div>
                         <p>Enter a word above to explore its meaning, pronunciation, and usage.</p>
                         <p style="margin-top: 15px; font-size: 0.9rem;">Try: hello, beautiful, computer, love, technology, happy, book, smart</p>
                     </div>
@@ -650,6 +701,13 @@
                 searchWord('hello');
             }, 1500);
         });
+
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+            });
+        }
     </script>
 </body>
 </html>
