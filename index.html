@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="icons/icon-192x192.png">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f97316">
+    <meta name="theme-color" content="#4299e1">
     <title>Defin</title>
     <style>
         * {
@@ -49,16 +49,11 @@
 
         .title {
             font-size: 2.5rem;
-            font-weight: 800;
+            font-weight: 300;
+            color: #4a5568;
             margin-bottom: 10px;
             letter-spacing: -0.5px;
         }
-
-        .title .c1 { color: #ef4444; }
-        .title .c2 { color: #f97316; }
-        .title .c3 { color: #22c55e; }
-        .title .c4 { color: #3b82f6; }
-        .title .c5 { color: #8b5cf6; }
 
         .subtitle {
             font-size: 1rem;
@@ -81,17 +76,17 @@
             padding: 16px 140px 16px 20px;
             font-size: 1.1rem;
             border: 2px solid #e2e8f0;
-            border-radius: 999px;
-            background: #ffffff;
+            border-radius: 12px;
+            background: #f7fafc;
             color: #2d3748;
             outline: none;
             transition: all 0.3s ease;
         }
 
         .search-input:focus {
-            border-color: #f97316;
+            border-color: #4299e1;
             background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
         }
 
         .search-btn {
@@ -99,11 +94,11 @@
             right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            background: #f97316;
+            background: #4299e1;
             color: white;
             border: none;
             padding: 8px 16px;
-            border-radius: 999px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
@@ -111,7 +106,7 @@
         }
 
         .search-btn:hover {
-            background: #ea580c;
+            background: #3182ce;
         }
 
         .search-btn:disabled {
@@ -150,11 +145,10 @@
         }
 
         .result-container {
-            background: #ffffff;
+            background: #f7fafc;
             border-radius: 16px;
             padding: 0;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             overflow: hidden;
         }
 
@@ -166,8 +160,8 @@
 
         .word-title {
             font-size: 2rem;
-            font-weight: 800;
-            color: #111827;
+            font-weight: 600;
+            color: #2d3748;
             margin-bottom: 8px;
         }
 
@@ -187,7 +181,7 @@
 
         .part-of-speech {
             display: inline-block;
-            background: #f97316;
+            background: #4299e1;
             color: white;
             padding: 6px 12px;
             border-radius: 20px;
@@ -197,12 +191,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
-        .pos-noun { background: #3b82f6; }
-        .pos-verb { background: #22c55e; }
-        .pos-adjective { background: #f59e0b; }
-        .pos-adverb { background: #8b5cf6; }
-        .pos-exclamation { background: #ec4899; }
 
         .definition-list {
             list-style: none;
@@ -218,7 +206,7 @@
             content: '•';
             position: absolute;
             left: 0;
-            color: #f97316;
+            color: #4299e1;
             font-weight: bold;
             font-size: 1.2rem;
         }
@@ -258,19 +246,13 @@
         }
 
         .synonym-tag {
-            background: #ffedd5;
-            color: #c2410c;
+            background: #edf2f7;
+            color: #4a5568;
             padding: 6px 12px;
             border-radius: 16px;
             font-size: 0.9rem;
-            border: 1px solid #fed7aa;
+            border: 1px solid #e2e8f0;
         }
-
-        .syn-0 { background: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
-        .syn-1 { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
-        .syn-2 { background: #fef3c7; color: #b45309; border-color: #fde68a; }
-        .syn-3 { background: #ede9fe; color: #6d28d9; border-color: #ddd6fe; }
-        .syn-4 { background: #fce7f3; color: #be185d; border-color: #fbcfe8; }
 
         .error {
             text-align: center;
@@ -333,7 +315,7 @@
     <div class="container">
         <header class="header">
             <img class="header-logo" src="icons/icon-192x192.png" alt="Defin logo">
-            <h1 class="title"><span class="c1">D</span><span class="c2">e</span><span class="c3">f</span><span class="c4">i</span><span class="c5">n</span></h1>
+            <h1 class="title">Defin</h1>
             <p class="subtitle">Discover meanings, pronunciations, and synonyms</p>
         </header>
 
@@ -633,11 +615,10 @@
             meanings.forEach(meaning => {
                 const partOfSpeech = meaning.partOfSpeech;
                 const definitions = meaning.definitions || [];
-                const posClass = 'pos-' + String(partOfSpeech || '').toLowerCase().replace(/[^a-z]/g, '');
 
                 resultHTML += `
                     <div class="meaning-group">
-                        <span class="part-of-speech ${posClass}">${partOfSpeech}</span>
+                        <span class="part-of-speech">${partOfSpeech}</span>
                         <ul class="definition-list">
                 `;
 
@@ -663,8 +644,8 @@
                         <div class="synonyms-list">
                 `;
                 
-                synonyms.slice(0, 8).forEach((synonym, i) => {
-                    resultHTML += `<span class="synonym-tag syn-${i % 5}">${synonym}</span>`;
+                synonyms.slice(0, 8).forEach(synonym => {
+                    resultHTML += `<span class="synonym-tag">${synonym}</span>`;
                 });
                 
                 resultHTML += '</div></div>';
